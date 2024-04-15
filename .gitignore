@@ -1,3 +1,8 @@
 .idea
 Pipfile
 Pipfile.lock
+templates/node_modules
+templates/package-lock.json
+templates/package.json
+templates/setupTailwind.txt
+templates/build
