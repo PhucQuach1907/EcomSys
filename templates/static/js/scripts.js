@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.error) {
                 alert(data.error);
             } else {
-                console.log('Login successful:', data);
+
             }
         } catch (error) {
             console.error('Error logging in:', error);
