@@ -54,4 +54,22 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error registering:', error);
         }
     });
+
+    const loginBtn = document.getElementById("login-btn");
+    const signupBtn = document.getElementById("signup-btn");
+    const loginContainer = document.getElementById("login");
+    const signupContainer = document.getElementById("signup");
+    loginBtn.addEventListener("click", function () {
+        loginBtn.classList.add("active");
+        signupBtn.classList.remove("active");
+        loginContainer.classList.remove("hidden");
+        signupContainer.classList.add("hidden");
+    });
+
+    signupBtn.addEventListener("click", function () {
+        signupBtn.classList.add("active");
+        loginBtn.classList.remove("active");
+        signupContainer.classList.remove("hidden");
+        loginContainer.classList.add("hidden");
+    });
 });

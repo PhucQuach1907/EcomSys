@@ -8,68 +8,56 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="build/tailwind.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="static/css/app.css">
     <script src="static/js/scripts.js"></script>
 </head>
-<body>
-<div class="form">
-    <div class="tab-content">
-        <div id="signup">
-            <h1>Sign Up</h1>
+<body class="bg-img">
+<div class="flex justify-center items-center h-screen">
+    <div class="bg-gray-500 p-8 rounded shadow-md w-500 bg-opacity-50">
+        <div class="mb-8 grid grid-cols-2 gap-x-0 mx-auto">
+            <button id="login-btn" class="px-4 py-2 bg-gray-200 rounded-md active">Login</button>
+            <button id="signup-btn" class="px-4 py-2 bg-gray-200 rounded-md">Signup</button>
+        </div>
+        <div id="signup" class="hidden">
+            <h1 class="text-center text-4xl font-bold mb-4 text-white">Sign Up</h1>
             <form id="signup-form" autocomplete="off">
-                <div class="top-row">
-                    <div class="field-wrap">
-                        <label>
-                            First Name<span class="req">*</span>
-                        </label>
-                        <input type="text" id="signup-firstname" required/>
-                    </div>
-                    <div class="field-wrap">
-                        <label>
-                            Last Name<span class="req">*</span>
-                        </label>
-                        <input type="text" id="signup-lastname" required/>
-                    </div>
+                <div class="mb-4">
+                    <label for="signup-firstname" class="block text-xl font-semibold text-white">First Name<span class="text-red-500">*</span></label>
+                    <input type="text" id="signup-firstname" name="signup-firstname" placeholder="First Name" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                 </div>
-                <div class="field-wrap">
-                    <label>
-                        Email Address<span class="req">*</span>
-                    </label>
-                    <input type="email" id="signup-email" required/>
+                <div class="mb-4">
+                    <label for="signup-lastname" class="block text-xl font-semibold text-white">Last Name<span class="text-red-500">*</span></label>
+                    <input type="text" id="signup-lastname" name="signup-lastname" placeholder="Last Name" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                 </div>
-                <div class="field-wrap">
-                    <label>
-                        Username<span class="req">*</span>
-                    </label>
-                    <input type="text" id="signup-username" required/>
+                <div class="mb-4">
+                    <label for="signup-email" class="block text-xl font-semibold text-white">Email Address<span class="text-red-500">*</span></label>
+                    <input type="email" id="signup-email" name="signup-email" placeholder="example@gmail.com" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                 </div>
-                <div class="field-wrap">
-                    <label>
-                        Set A Password<span class="req">*</span>
-                    </label>
-                    <input type="password" id="signup-password" required/>
+                <div class="mb-4">
+                    <label for="signup-username" class="block text-xl font-semibold text-white">Username<span class="text-red-500">*</span></label>
+                    <input type="text" id="signup-username" name="signup-username" placeholder="Username" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                 </div>
-                <button type="submit" class="button button-block">Get Started</button>
+                <div class="mb-4">
+                    <label for="signup-password" class="block text-xl font-semibold text-white">Set A Password<span class="text-red-500">*</span></label>
+                    <input type="password" id="signup-password" name="signup-password" placeholder="Password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                </div>
+                <button type="submit" class="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Get Started</button>
             </form>
         </div>
 
         <div id="login">
-            <h1>Welcome Back!</h1>
+            <h1 class="text-center text-4xl font-bold mb-4 text-white">Welcome Back!</h1>
             <form id="login-form">
-                <div class="field-wrap">
-                    <label>
-                        Email Address<span class="req">*</span>
-                    </label>
-                    <input type="email" id="login-email" required/>
+                <div class="mb-4">
+                    <label for="login-email" class="block text-xl font-semibold text-white">Email Address<span class="text-red-500">*</span></label>
+                    <input type="email" id="login-email" name="login-email" placeholder="example@gmail.com" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                 </div>
-                <div class="field-wrap">
-                    <label>
-                        Password<span class="req">*</span>
-                    </label>
-                    <input type="password" id="login-password" required/>
+                <div class="mb-4">
+                    <label for="login-password" class="block text-xl font-semibold text-white">Password<span class="text-red-500">*</span></label>
+                    <input type="password" id="login-password" name="login-password" placeholder="Password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 sm:text-sm sm:text-sm border-gray-300 rounded-md" required>
                 </div>
-                <button class="button button-block">Log In</button>
+                <button type="submit" class="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Log In</button>
             </form>
         </div>
     </div>
