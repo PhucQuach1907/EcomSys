@@ -33,4 +33,7 @@ router.register(r'mobiles', MobileViewSet)
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('product/api/', include(router.urls)),
+    path('books/search-books/', BookViewSet.as_view({'get': 'search_book'}), name='search_book'),
+    path('clothes/search-clothes/', ClothesViewSet.as_view({'get': 'search_clothes'}), name='search_clothes'),
+    path('mobiles/search-mobiles/', MobileViewSet.as_view({'get': 'search_mobiles'}), name='search_mobiles'),
 ]
