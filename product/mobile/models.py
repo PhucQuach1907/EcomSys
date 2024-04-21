@@ -13,7 +13,7 @@ class Type(models.Model):
 
 
 class Mobile(models.Model):
-    image = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='images/')
     name = models.CharField(max_length=50)
     producer = models.CharField(max_length=50)
     type = models.ForeignKey(to=Type, on_delete=models.CASCADE, null=True)

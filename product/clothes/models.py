@@ -13,7 +13,7 @@ class Type(models.Model):
 
 
 class Clothes(models.Model):
-    image = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='images/')
     name = models.CharField(max_length=50)
     brand_name = models.CharField(max_length=50)
     type = models.ForeignKey(to=Type, null=True, on_delete=models.CASCADE)
