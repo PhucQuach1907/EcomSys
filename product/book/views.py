@@ -1,3 +1,6 @@
+import numpy as np
+from PIL import Image
+from extract_features import *
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -24,6 +27,10 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all().order_by('name')
     serializer_class = BookSerializer
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.features_list = extract_features_books()
+
     @action(detail=True, methods=['get'])
     def search_book(self, request, pk=None):
         query = request.query_params.get('query', None)
@@ -33,3 +40,19 @@ class BookViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Query parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'])
+    def search_book_by_image(self, request, pk=None):
+        uploaded_image = request.FILES['image']
+        searched_image = Image.open(uploaded_image)
+        query_features = extract_features(searched_image)
+        threshold = 100
+
+        matched_books = []
+        for i, features in enumerate(self.features_list):
+            distance = np.linalg.norm(query_features - features)
+            if distance < threshold:
+                matched_books.append(Book.objects.all()[i])
+
+        serializer = BookSerializer(matched_books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

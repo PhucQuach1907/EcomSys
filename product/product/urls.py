@@ -34,6 +34,9 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('product/api/', include(router.urls)),
     path('books/search-books/', BookViewSet.as_view({'get': 'search_book'}), name='search_book'),
+    path('books/search-books-by-image/', BookViewSet.as_view({'get': 'search_book_by_image'}), name='search_book_by_image'),
     path('clothes/search-clothes/', ClothesViewSet.as_view({'get': 'search_clothes'}), name='search_clothes'),
+    path('clothes/search-clothes-by-image/', ClothesViewSet.as_view({'get': 'search_clothes_by_image'}), name='search_clothes_by_image'),
     path('mobiles/search-mobiles/', MobileViewSet.as_view({'get': 'search_mobiles'}), name='search_mobiles'),
+    path('mobiles/search-mobiles-by-image/', MobileViewSet.as_view({'get': 'search_mobiles_by_image'}), name='search_mobiles_by_image'),
 ]
