@@ -5,4 +5,5 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'password', 'first_name', 'last_name']
+        fields = '__all__'
+        extra_kwargs = {'is_active': {'read_only': True}}
