@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-comSys</title>
+    <title>E-comSys Books</title>
     <link rel="shortcut icon" type="image/x-icon" href="media/favicon/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,31 +29,11 @@
 </nav>
 
 <div class="container mx-auto w-4/5 p-20 bg-slate-100">
-    <h1 class="text-5xl font-semibold mb-8 mt-4 text-center text-red-600">Welcome to Our Store</h1>
-    <section id="books" class="product-section mb-16 border-b-2 border-gray-200 pb-8">
-        <span class="flex justify-between items-center">
-            <h2 class="text-2xl font-semibold mb-4">Books</h2>
-            <a href="products.html" class="text-blue-500 text-xl font-semibold" data-type="books">View all</a>
-        </span>
-        <div id="books-list" class="product-list grid grid-cols-4 gap-8"></div>
-    </section>
-
-    <section id="mobiles" class="product-section mb-16 border-b-2 border-gray-200 pb-8">
-        <span class="flex justify-between items-center">
-            <h2 class="text-2xl font-semibold mb-4">Mobiles</h2>
-            <a href="products.html" class="text-blue-500 text-xl font-semibold" data-type="mobiles">View all</a>
-        </span>
-        <div id="mobiles-list" class="product-list grid grid-cols-4 gap-8"></div>
-    </section>
-
-    <section id="clothes" class="product-section mb-16 border-b-2 border-gray-200 pb-8">
-        <span class="flex justify-between items-center">
-            <h2 class="text-2xl font-semibold mb-4">Clothes</h2>
-            <a href="products.html" class="text-blue-500 text-xl font-semibold" data-type="clothes">View all</a>
-        </span>
-        <div id="clothes-list" class="product-list grid grid-cols-4 gap-8"></div>
-    </section>
+    <h1 id="product-type" class="text-5xl font-semibold mb-8 mt-4 text-center text-red-600">Books</h1>
+    <ul id="pagination" class="pagination flex justify-center"></ul>
+    <div id="product-list" class="grid grid-cols-4 gap-8 mt-5"></div>
 </div>
-<script src="static/js/home.js"></script>
+
+<script src="static/js/products.js"></script>
 </body>
 </html>

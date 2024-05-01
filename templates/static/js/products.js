@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const token = sessionStorage.getItem('token');
+    const type = sessionStorage.getItem('type');
     if (!token) {
         confirm("Vui lòng đăng nhập!")
         if (confirm) {
@@ -28,55 +29,31 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             displayUsername(data.username);
-            fetchProducts('http://127.0.0.1:8082/product/api/books/')
-                .then(products => displayProducts(products, 'books'))
+            displayProductType(type);
+            let productUrl = 'http://127.0.0.1:8082/product/api/' + type + '/';
+            fetchProducts(productUrl)
+                .then(products => displayProducts(products, 'product-section', 1))
                 .catch(error => console.error('Error fetching books:', error));
-
-            fetchProducts('http://127.0.0.1:8082/product/api/mobiles/')
-                .then(products => displayProducts(products, 'mobiles'))
-                .catch(error => console.error('Error fetching mobiles:', error));
-
-            fetchProducts('http://127.0.0.1:8082/product/api/clothes/')
-                .then(products => displayProducts(products, 'clothes'))
-                .catch(error => console.error('Error fetching clothes:', error));
-
-            const viewAllLinks = document.querySelectorAll('[data-type]');
-            viewAllLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const type = this.dataset.type;
-                    sessionStorage.setItem('type', type);
-                    window.location.href = this.getAttribute('href');
-                });
-            });
         })
         .catch(error => {
             console.error('There was a problem with your fetch operation:', error);
         });
 });
 
-function displayUsername(username) {
-    const usernameSpan = document.getElementById('username');
-    usernameSpan.textContent = "Hello, " + username;
-}
-
-async function fetchProducts(url) {
-    const response = await fetch(url);
-    return await response.json();
-}
-
-function displayProducts(products, sectionId) {
-    const section = document.getElementById(sectionId);
-    const productList = section.querySelector('.product-list');
+function displayProducts(products, sectionId, currentPage) {
+    const productList = document.getElementById('product-list');
+    const pagination = document.getElementById('pagination');
 
     productList.innerHTML = '';
+    pagination.innerHTML = '';
 
-    let index = 0;
+    const itemsPerPage = 8;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
 
-    products.forEach(product => {
-        if (index >= 4) {
-            return;
-        }
+    const paginatedProducts = products.slice(startIndex, endIndex);
+
+    paginatedProducts.forEach(product => {
         const productContainer = document.createElement('div');
         productContainer.classList.add('w-60', 'bg-white', 'shadow-lg', 'border', 'border-black', 'rounded-lg', 'overflow-hidden', 'm-4', 'flex', 'flex-col');
 
@@ -105,6 +82,42 @@ function displayProducts(products, sectionId) {
         productContainer.appendChild(addToCartButton);
 
         productList.appendChild(productContainer);
-        index++;
     });
+
+    const totalPages = Math.ceil(products.length / itemsPerPage);
+    for (let i = 1; i <= totalPages; i++) {
+        const pageItem = document.createElement('li');
+        const pageLink = document.createElement('a');
+        pageLink.href = `?page=${i}`;
+        pageLink.textContent = i;
+        pageLink.classList.add('px-3', 'py-2');
+        if (i === currentPage) {
+            pageLink.classList.add('bg-blue-500', 'text-white');
+        } else {
+            pageLink.classList.add('text-blue-500', 'hover:bg-blue-200');
+        }
+        pageLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            displayProducts(products, 'product-section', i);
+            window.history.pushState({}, '', `?page=${i}`);
+        });
+        pageItem.appendChild(pageLink);
+        pagination.appendChild(pageItem);
+    }
+}
+
+async function fetchProducts(url) {
+    const response = await fetch(url);
+    return await response.json();
+}
+
+function displayUsername(username) {
+    const usernameSpan = document.getElementById('username');
+    usernameSpan.textContent = "Hello, " + username;
+}
+
+function displayProductType(type) {
+    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+    const productTitle = document.getElementById('product-type');
+    productTitle.textContent = capitalizedType;
 }
