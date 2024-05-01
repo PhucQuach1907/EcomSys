@@ -9,7 +9,7 @@ from .serializers import *
 
 
 class MobileViewSet(viewsets.ModelViewSet):
-    queryset = Mobile.objects.all().order_by('name')
+    queryset = Mobile.objects.all().order_by('id')
     serializer_class = MobileSerializer
 
     def __init__(self, *args, **kwargs):

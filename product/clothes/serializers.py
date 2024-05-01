@@ -4,11 +4,9 @@ from .models import Clothes, Type
 
 
 class ClothesSerializer(serializers.ModelSerializer):
-    type = serializers.CharField(source='type.name', read_only=True)
-
     class Meta:
         model = Clothes
-        fields = ['id', 'image', 'name', 'type', 'quantity', 'price']
+        fields = '__all__'
 
 
 class TypeSerializer(serializers.ModelSerializer):

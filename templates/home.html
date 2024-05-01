@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-comSys</title>
+    <link rel="shortcut icon" type="image/x-icon" href="media/favicon/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="static/css/app.css">
+</head>
+<body>
+<nav class="bg-gray-900 p-4 shadow-lg fixed w-full z-20 top-0 start-0">
+    <div class="container mx-auto flex justify-between items-center">
+        <span class="text-white text-2xl" id="username">Hello, Username</span>
+        <div class="flex items-center">
+            <div class="flex items-center ml-4">
+                <input type="text" placeholder="Search..." class="px-4 py-2 bg-gray-800 text-white rounded-l-md focus:outline-none">
+                <button type="submit" class="px-4 py-2 bg-gray-700 text-white rounded-r-md"><i
+                        class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <a href="home.html" class="text-yellow-500 px-4 py-2 text-2xl"><i class="fa-solid fa-house"></i></a>
+            <a href="#cart" class="text-white px-4 py-2 text-2xl"><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto w-4/5 p-20 bg-slate-100">
+    <h1 class="text-5xl font-semibold mb-8 mt-4 text-center text-red-600">Welcome to Our Store</h1>
+    <section id="books" class="product-section mb-16 border-b-2 border-gray-200 pb-8">
+        <h2 class="text-2xl font-semibold mb-4">Books</h2>
+        <div id="books-list" class="product-list grid grid-cols-4 gap-8"></div>
+        <div id="books-pagination" class="mt-8"></div>
+    </section>
+
+    <section id="mobiles" class="product-section mb-16 border-b-2 border-gray-200 pb-8">
+        <h2 class="text-2xl font-semibold mb-4">Mobiles</h2>
+        <div id="mobiles-list" class="product-list grid grid-cols-4 gap-8"></div>
+        <div id="mobiles-pagination" class="mt-8"></div>
+    </section>
+
+    <section id="clothes" class="product-section mb-16 border-b-2 border-gray-200 pb-8">
+        <h2 class="text-2xl font-semibold mb-4">Clothes</h2>
+        <div id="clothes-list" class="product-list grid grid-cols-4 gap-8"></div>
+        <div id="clothes-pagination" class="mt-8"></div>
+    </section>
+</div>
+<script src="static/js/home.js"></script>
+</body>
+</html>

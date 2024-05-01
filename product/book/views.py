@@ -24,7 +24,7 @@ class PublisherViewSet(viewsets.ModelViewSet):
 
 
 class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all().order_by('name')
+    queryset = Book.objects.all().order_by('id')
     serializer_class = BookSerializer
 
     def __init__(self, *args, **kwargs):

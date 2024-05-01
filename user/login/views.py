@@ -37,10 +37,11 @@ def login(request):
 
 class DecodeToken(APIView):
     def get(self, request):
-        token = request.COOKIES.get('token')
+        token = request.headers.get('Authorization')
         if not token:
             return Response({'error': 'Vui lòng đăng nhập!'}, status=status.HTTP_401_UNAUTHORIZED)
 
+        token = token.split('Bearer ')[1] if token.startswith('Bearer ') else None
         try:
             decoded_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
             user_id = decoded_payload['user_id']

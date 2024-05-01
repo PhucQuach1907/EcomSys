@@ -4,11 +4,9 @@ from .models import Mobile, Type
 
 
 class MobileSerializer(serializers.ModelSerializer):
-    type = serializers.CharField(source='type.name', read_only=True)
-
     class Meta:
         model = Mobile
-        fields = ['id', 'image', 'name', 'producer', 'type', 'quantity', 'price']
+        fields = '__all__'
 
 
 class TypeSerializer(serializers.ModelSerializer):

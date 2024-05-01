@@ -9,7 +9,7 @@ from .serializers import *
 
 
 class ClothesViewSet(viewsets.ModelViewSet):
-    queryset = Clothes.objects.all().order_by('name')
+    queryset = Clothes.objects.all().order_by('id')
     serializer_class = ClothesSerializer
 
     def __init__(self, *args, **kwargs):

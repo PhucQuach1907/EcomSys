@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const password = document.getElementById('login-password').value;
 
         try {
-            const response = await fetch('http://127.0.0.1:8081/api/user/login/', {
+            const response = await fetch('http://127.0.0.1:8081/user/login/api/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.error) {
                 alert(data.error);
             } else {
-
+                const token = data.token;
+                sessionStorage.setItem('token', token);
+                window.location.href = "home.html";
             }
         } catch (error) {
             console.error('Error logging in:', error);
@@ -32,24 +34,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const email = document.getElementById('signup-email').value;
         const password = document.getElementById('signup-password').value;
         const username = document.getElementById('signup-username').value;
-        const firstname = document.getElementById('signup-firstname').value;
-        const lastname = document.getElementById('signup-lastname').value;
+        const first_name = document.getElementById('signup-firstname').value;
+        const last_name = document.getElementById('signup-lastname').value;
 
         try {
-            const response = await fetch('http://127.0.0.1:8081/api/user/register/', {
+            const response = await fetch('http://127.0.0.1:8081/user/register/api/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, username, password, firstname, lastname })
+                body: JSON.stringify({ email, username, password, first_name, last_name })
             });
 
             if (!response.ok) {
-                throw new Error('Registration failed');
+                alert('Registration failed');
             }
-
-            const data = await response.json();
-            console.log('Registration successful:', data);
+            window.location.reload();
         } catch (error) {
             console.error('Error registering:', error);
         }
