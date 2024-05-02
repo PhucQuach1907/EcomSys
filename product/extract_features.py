@@ -24,37 +24,25 @@ def preprocess_image(image):
     return image
 
 
-def extract_features_books():
-    all_books = Book.objects.all()
+def extract_features_products(products):
     features_list = []
-
-    for book in all_books:
-        image = Image.open(book.image)
+    for product in products:
+        image = Image.open(product.image)
         features = extract_features(image)
         features_list.append(features)
-
     return features_list
+
+
+def extract_features_books():
+    all_books = Book.objects.all()
+    return extract_features_products(all_books)
 
 
 def extract_features_clothes():
     all_clothes = Clothes.objects.all()
-    features_list = []
-
-    for cloth in all_clothes:
-        image = Image.open(cloth.image)
-        features = extract_features(image)
-        features_list.append(features)
-
-    return features_list
+    return extract_features_products(all_clothes)
 
 
 def extract_features_mobiles():
     all_mobiles = Mobile.objects.all()
-    features_list = []
-
-    for mobile in all_mobiles:
-        image = Image.open(mobile.image)
-        features = extract_features(image)
-        features_list.append(features)
-
-    return features_list
+    return extract_features_products(all_mobiles)

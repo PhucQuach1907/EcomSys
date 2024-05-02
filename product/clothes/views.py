@@ -12,10 +12,6 @@ class ClothesViewSet(viewsets.ModelViewSet):
     queryset = Clothes.objects.all().order_by('id')
     serializer_class = ClothesSerializer
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.features_list = extract_features_clothes()
-
     @action(detail=True, methods=['get'])
     def search_clothes(self, request, pk=None):
         query = request.query_params.get('query', None)
@@ -32,9 +28,10 @@ class ClothesViewSet(viewsets.ModelViewSet):
         searched_image = Image.open(uploaded_image)
         query_features = extract_features(searched_image)
         threshold = 100
+        features_list = extract_features_clothes()
 
         matched_clothes = []
-        for i, features in enumerate(self.features_list):
+        for i, features in enumerate(features_list):
             distance = np.linalg.norm(query_features - features)
             if distance < threshold:
                 matched_clothes.append(Clothes.objects.all()[i])

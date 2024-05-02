@@ -12,10 +12,6 @@ class MobileViewSet(viewsets.ModelViewSet):
     queryset = Mobile.objects.all().order_by('id')
     serializer_class = MobileSerializer
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.features_list = extract_features_mobiles()
-
     @action(detail=True, methods=['get'])
     def search_mobiles(self, request, pk=None):
         query = request.query_params.get('query', None)
@@ -32,9 +28,10 @@ class MobileViewSet(viewsets.ModelViewSet):
         searched_image = Image.open(uploaded_image)
         query_features = extract_features(searched_image)
         threshold = 100
+        features_list = extract_features_mobiles()
 
         matched_mobiles = []
-        for i, features in enumerate(self.features_list):
+        for i, features in enumerate(features_list):
             distance = np.linalg.norm(query_features - features)
             if distance < threshold:
                 matched_mobiles.append(Mobile.objects.all()[i])
