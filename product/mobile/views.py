@@ -16,8 +16,10 @@ class MobileViewSet(viewsets.ModelViewSet):
     def search_mobiles(self, request, pk=None):
         query = request.query_params.get('query', None)
         if query:
-            mobiles = Mobile.objects.filter(name__icontains=query).order_by('name')
+            mobiles = Mobile.objects.filter(name__icontains=query).order_by('id')
             serializer = MobileSerializer(mobiles, many=True)
+            for mobile in serializer.data:
+                mobile['image'] = request.build_absolute_uri(mobile['image'])
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Query parameter is required'}, status=status.HTTP_400_BAD_REQUEST)

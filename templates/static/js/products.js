@@ -96,7 +96,7 @@ function displayProducts(products, sectionId, currentPage) {
         } else {
             pageLink.classList.add('text-blue-500', 'hover:bg-blue-200');
         }
-        pageLink.addEventListener('click', function(event) {
+        pageLink.addEventListener('click', function (event) {
             event.preventDefault();
             displayProducts(products, 'product-section', i);
             window.history.pushState({}, '', `?page=${i}`);
@@ -120,4 +120,27 @@ function displayProductType(type) {
     const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
     const productTitle = document.getElementById('product-type');
     productTitle.textContent = capitalizedType;
+}
+
+function handleSearch() {
+    const query = document.getElementById('product-searchbar').value;
+    const type = sessionStorage.getItem('type');
+    if (!query) {
+        window.location.reload();
+    }
+    let product_type;
+    switch (type) {
+        case "books":
+            product_type = 1;
+            break;
+        case "mobiles":
+            product_type = 2;
+            break;
+        case "clothes":
+            product_type = 3;
+            break;
+    }
+    fetchProducts(`http://127.0.0.1:8083/search/?query=${query}&type=${product_type}`)
+        .then(products => displayProducts(products, 'product-section', 1))
+        .catch(error => console.error('Error fetching books:', error));
 }

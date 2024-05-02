@@ -31,8 +31,10 @@ class BookViewSet(viewsets.ModelViewSet):
     def search_book(self, request, pk=None):
         query = request.query_params.get('query', None)
         if query:
-            books = Book.objects.filter(name__icontains=query).order_by('name')
+            books = Book.objects.filter(name__icontains=query).order_by('id')
             serializer = BookSerializer(books, many=True)
+            for book in serializer.data:
+                book['image'] = request.build_absolute_uri(book['image'])
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Query parameter is required'}, status=status.HTTP_400_BAD_REQUEST)

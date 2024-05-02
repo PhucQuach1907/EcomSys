@@ -16,8 +16,10 @@ class ClothesViewSet(viewsets.ModelViewSet):
     def search_clothes(self, request, pk=None):
         query = request.query_params.get('query', None)
         if query:
-            clothes = Clothes.objects.filter(name__icontains=query).order_by('name')
+            clothes = Clothes.objects.filter(name__icontains=query).order_by('id')
             serializer = ClothesSerializer(clothes, many=True)
+            for cloth in serializer.data:
+                cloth['image'] = request.build_absolute_uri(cloth['image'])
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Query parameter is required'}, status=status.HTTP_400_BAD_REQUEST)

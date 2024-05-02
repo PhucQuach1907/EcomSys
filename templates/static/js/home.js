@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const viewAllLinks = document.querySelectorAll('[data-type]');
             viewAllLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
+                link.addEventListener('click', function (event) {
                     event.preventDefault();
                     const type = this.dataset.type;
                     sessionStorage.setItem('type', type);
@@ -107,4 +107,22 @@ function displayProducts(products, sectionId) {
         productList.appendChild(productContainer);
         index++;
     });
+}
+
+function handleSearch() {
+    const query = document.getElementById('home-searchbar').value;
+    if (!query) {
+        window.location.reload();
+    }
+    fetchProducts(`http://127.0.0.1:8083/search/?query=${query}&type=1`)
+        .then(products => displayProducts(products, 'books'))
+        .catch(error => console.error('Error fetching books:', error));
+
+    fetchProducts(`http://127.0.0.1:8083/search/?query=${query}&type=2`)
+        .then(products => displayProducts(products, 'mobiles'))
+        .catch(error => console.error('Error fetching mobiles:', error));
+
+    fetchProducts(`http://127.0.0.1:8083/search/?query=${query}&type=3`)
+        .then(products => displayProducts(products, 'clothes'))
+        .catch(error => console.error('Error fetching clothes:', error));
 }
