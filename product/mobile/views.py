@@ -39,6 +39,8 @@ class MobileViewSet(viewsets.ModelViewSet):
                 matched_mobiles.append(Mobile.objects.all()[i])
 
         serializer = MobileSerializer(matched_mobiles, many=True)
+        for mobile in serializer.data:
+            mobile['image'] = request.build_absolute_uri(mobile['image'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

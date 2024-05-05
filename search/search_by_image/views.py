@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 # Create your views here.
 class SearchProductByImageAPIView(APIView):
-    def get(self, request):
+    def post(self, request):
         image = request.FILES.get('image')
         product_type = request.data.get('type')
         data = []

@@ -144,3 +144,44 @@ function handleSearch() {
         .then(products => displayProducts(products, 'product-section', 1))
         .catch(error => console.error('Error fetching books:', error));
 }
+
+function handleSearchByImage() {
+    let input = document.getElementById('image-input');
+    const type = sessionStorage.getItem('type');
+    let product_type;
+    switch (type) {
+        case "books":
+            product_type = 1;
+            break;
+        case "mobiles":
+            product_type = 2;
+            break;
+        case "clothes":
+            product_type = 3;
+            break;
+    }
+    input.onchange = function (e) {
+        let file = e.target.files[0];
+        let formData = new FormData();
+        formData.append('image', file);
+        formData.append('type', product_type);
+
+        let promise = fetch('http://127.0.0.1:8083/search-by-image/', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                displayProducts(data, 'product-section', 1)
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
+    };
+    input.click();
+}

@@ -39,6 +39,8 @@ class ClothesViewSet(viewsets.ModelViewSet):
                 matched_clothes.append(Clothes.objects.all()[i])
 
         serializer = ClothesSerializer(matched_clothes, many=True)
+        for cloth in serializer.data:
+            cloth['image'] = request.build_absolute_uri(cloth['image'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

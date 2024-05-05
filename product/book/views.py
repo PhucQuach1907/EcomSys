@@ -54,4 +54,6 @@ class BookViewSet(viewsets.ModelViewSet):
                 matched_books.append(Book.objects.all()[i])
 
         serializer = BookSerializer(matched_books, many=True)
+        for book in serializer.data:
+            book['image'] = request.build_absolute_uri(book['image'])
         return Response(serializer.data, status=status.HTTP_200_OK)

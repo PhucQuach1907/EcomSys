@@ -126,3 +126,38 @@ function handleSearch() {
         .then(products => displayProducts(products, 'clothes'))
         .catch(error => console.error('Error fetching clothes:', error));
 }
+
+function handleSearchByImage() {
+    let input = document.getElementById('image-input');
+    input.onchange = function (e) {
+        let file = e.target.files[0];
+        for (let i = 1; i <= 3; i++) {
+            let formData = new FormData();
+            formData.append('image', file);
+            formData.append('type', i);
+
+            let promise = fetch('http://127.0.0.1:8083/search-by-image/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                let type = '';
+                if (i === 1) type = 'books'
+                else if (i === 2) type = 'mobiles'
+                else type = 'clothes'
+                displayProducts(data, type);
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
+        }
+    };
+    input.click();
+}
+
