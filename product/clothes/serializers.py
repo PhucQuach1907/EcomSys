@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Clothes, Type
+from .models import *
 
 
 class ClothesSerializer(serializers.ModelSerializer):
@@ -9,7 +9,13 @@ class ClothesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TypeSerializer(serializers.ModelSerializer):
+class ProducerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Type
+        model = Producer
+        fields = '__all__'
+
+
+class StyleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Style
         fields = '__all__'

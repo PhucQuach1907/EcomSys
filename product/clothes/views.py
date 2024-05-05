@@ -42,6 +42,11 @@ class ClothesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ClothesTypesViewSet(viewsets.ModelViewSet):
-    queryset = Type.objects.all()
-    serializer_class = TypeSerializer
+class ClothesProducerViewSet(viewsets.ModelViewSet):
+    queryset = Producer.objects.all()
+    serializer_class = ProducerSerializer
+
+
+class ClothesStyleViewSet(viewsets.ModelViewSet):
+    queryset = Style.objects.all()
+    serializer_class = StyleSerializer

@@ -2,11 +2,21 @@ from djongo import models
 
 
 # Create your models here.
-class Type(models.Model):
-    name = models.CharField(max_length=50)
+class Producer(models.Model):
+    name = models.CharField(max_length=255)
 
     class Meta:
-        db_table = 'clothes_type'
+        db_table = 'clothes_producer'
+
+    def __str__(self):
+        return self.name
+
+
+class Style(models.Model):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'clothes_style'
 
     def __str__(self):
         return self.name
@@ -15,8 +25,8 @@ class Type(models.Model):
 class Clothes(models.Model):
     image = models.ImageField(upload_to='images/')
     name = models.CharField(max_length=50)
-    brand_name = models.CharField(max_length=50)
-    type = models.ForeignKey(to=Type, null=True, on_delete=models.CASCADE)
+    producer = models.ForeignKey(to=Producer, null=True, on_delete=models.CASCADE)
+    style = models.ForeignKey(to=Style, null=True, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
     price = models.BigIntegerField()
 
