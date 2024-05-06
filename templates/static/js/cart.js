@@ -37,16 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-function displayUsername(username) {
-    const usernameSpan = document.getElementById('username');
-    usernameSpan.textContent = "Hello, " + username;
-}
-
-async function fetchProducts(url) {
-    const response = await fetch(url);
-    return await response.json();
-}
-
 function displayProducts(items) {
     const productList = document.getElementById('product-list');
 
@@ -115,27 +105,31 @@ function displayProducts(items) {
                 productImage.src = product.image;
                 productName.textContent = product.name;
                 quantityDisplay.textContent = item.quantity;
-                productPrice.textContent = `Price: ${item.quantity * product.price} VND`;
+                let price;
+                price = formatPrice(item.quantity * product.price);
+                productPrice.textContent = `Price: ${price} VND`;
                 total += item.quantity * product.price;
                 counter++;
                 if (counter === items.length) {
-                    displayTotal(total);
+                    displayTotal(formatPrice(total));
                 }
                 increaseButton.addEventListener('click', () => {
                     item.quantity++;
                     quantityDisplay.textContent = item.quantity;
-                    productPrice.textContent = `Price: ${item.quantity * product.price} VND`;
+                    price = formatPrice(item.quantity * product.price);
+                    productPrice.textContent = `Price: ${price} VND`;
                     total += product.price;
-                    displayTotal(total);
+                    displayTotal(formatPrice(total));
                     updateCart(item);
                 });
                 decreaseButton.addEventListener('click', () => {
                     if (item.quantity > 1) {
                         item.quantity--;
                         quantityDisplay.textContent = item.quantity;
-                        productPrice.textContent = `Price: ${item.quantity * product.price} VND`;
+                        price = formatPrice(item.quantity * product.price);
+                        productPrice.textContent = `Price: ${price} VND`;
                         total -= product.price;
-                        displayTotal(total);
+                        displayTotal(formatPrice(total));
                         updateCart(item);
                     }
                 });

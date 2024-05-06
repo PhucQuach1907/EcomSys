@@ -1,4 +1,3 @@
-let currentUserId;
 document.addEventListener('DOMContentLoaded', function () {
     const token = sessionStorage.getItem('token');
     if (!token) {
@@ -57,16 +56,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-function displayUsername(username) {
-    const usernameSpan = document.getElementById('username');
-    usernameSpan.textContent = "Hello, " + username;
-}
-
-async function fetchProducts(url) {
-    const response = await fetch(url);
-    return await response.json();
-}
-
 function displayProducts(products, sectionId) {
     const section = document.getElementById(sectionId);
     const productList = section.querySelector('.product-list');
@@ -96,7 +85,8 @@ function displayProducts(products, sectionId) {
         contentWrapper.appendChild(productName);
 
         const productPrice = document.createElement('div');
-        productPrice.textContent = `Price: ${product.price} VND`;
+        let price = formatPrice(product.price);
+        productPrice.textContent = `Price: ${price} VND`;
         productPrice.classList.add('px-4', 'py-2', 'text-red-500');
         contentWrapper.appendChild(productPrice);
 
@@ -192,7 +182,8 @@ async function openPopup(product, sectionId) {
     }
 
     const productPrice = document.createElement('div');
-    productPrice.textContent = `Price: ${product.price} VND`;
+    let price = formatPrice(product.price);
+    productPrice.textContent = `Price: ${price} VND`;
     productPrice.classList.add('text-xl', 'text-red-500', 'font-semibold', 'mb-2');
     contentWrapper.appendChild(productPrice);
 
@@ -278,39 +269,6 @@ function addToCart(product_id, user_id, productType, quantity) {
         .catch(error => {
             console.error('There was a problem with your fetch operation:', error);
         });
-}
-
-async function getForeignKeyName(id, type) {
-    let url = `http://127.0.0.1:8082/product/api/${type}/${id}/`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data.name;
-    } catch (error) {
-        console.error('There was an error:', error);
-    }
-}
-
-async function getForeignKeyNames(ids, type) {
-    const promises = ids.map(async id => {
-        let url = `http://127.0.0.1:8082/product/api/${type}/${id}/`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Network response for ${id} was not ok`);
-            }
-            const data = await response.json();
-            return data.name;
-        } catch (error) {
-            console.error(`There was an error for ${id}:`, error);
-            return null;
-        }
-    });
-
-    return Promise.all(promises);
 }
 
 function handleSearch() {
