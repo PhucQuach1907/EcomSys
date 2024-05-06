@@ -51,6 +51,8 @@ function displayProducts(items) {
     const productList = document.getElementById('product-list');
 
     productList.innerHTML = '';
+    let total = 0;
+    let counter = 0;
     items.forEach(item => {
         const productContainer = document.createElement('div');
         productContainer.classList.add('bg-white', 'shadow-lg', 'border', 'border-black', 'rounded-lg', 'overflow-hidden', 'm-4', 'flex', 'relative');
@@ -114,10 +116,17 @@ function displayProducts(items) {
                 productName.textContent = product.name;
                 quantityDisplay.textContent = item.quantity;
                 productPrice.textContent = `Price: ${item.quantity * product.price} VND`;
+                total += item.quantity * product.price;
+                counter++;
+                if (counter === items.length) {
+                    displayTotal(total);
+                }
                 increaseButton.addEventListener('click', () => {
                     item.quantity++;
                     quantityDisplay.textContent = item.quantity;
                     productPrice.textContent = `Price: ${item.quantity * product.price} VND`;
+                    total += product.price;
+                    displayTotal(total);
                     updateCart(item);
                 });
                 decreaseButton.addEventListener('click', () => {
@@ -125,6 +134,8 @@ function displayProducts(items) {
                         item.quantity--;
                         quantityDisplay.textContent = item.quantity;
                         productPrice.textContent = `Price: ${item.quantity * product.price} VND`;
+                        total -= product.price;
+                        displayTotal(total);
                         updateCart(item);
                     }
                 });
@@ -163,4 +174,15 @@ function updateCart(item) {
             return response.json();
         })
         .catch(error => console.error('There was an error updating cart item:', error));
+}
+
+function displayTotal(total) {
+    const totalMoney = document.getElementById('order-summary');
+    totalMoney.innerHTML = '';
+    const totalLabel = document.createElement('p');
+    totalLabel.textContent = "TOTAL:";
+    const totalNumber = document.createElement('p');
+    totalNumber.textContent = total;
+    totalMoney.appendChild(totalLabel);
+    totalMoney.appendChild(totalNumber);
 }
