@@ -180,3 +180,7 @@ function displayTotal(total) {
     totalMoney.appendChild(totalLabel);
     totalMoney.appendChild(totalNumber);
 }
+
+function goToCheckout() {
+    window.location.href = "checkout.html";
+}

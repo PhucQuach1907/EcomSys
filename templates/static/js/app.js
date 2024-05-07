@@ -1,4 +1,4 @@
-let currentUserId, productType;
+let currentUserId, currentUsername, productType;
 function displayUsername(username) {
     const usernameSpan = document.getElementById('username');
     usernameSpan.textContent = "Hello, " + username;
