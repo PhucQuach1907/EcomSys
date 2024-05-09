@@ -1,3 +1,4 @@
+let is_staff, is_delivery;
 document.addEventListener('DOMContentLoaded', function () {
     const token = sessionStorage.getItem('token');
     if (!token) {
@@ -30,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
             currentUserId = data.id;
             currentUsername = data.username;
             displayUsername(data.username);
+            is_staff = data.is_staff;
+            is_delivery = data.is_delivery_office;
             fetchProducts('http://127.0.0.1:8086/shipment/api/shipment-updates/')
                 .then(orders => displayOrders(orders))
                 .catch(error => console.error('Error fetching clothes:', error));
@@ -74,7 +77,65 @@ function displayOrders(orders) {
     orderList.innerHTML = '';
 
     orders.forEach(order => {
-        if (order.user_id === currentUserId) {
+        if (is_staff || is_delivery) {
+            let shipmentStatusId;
+            const orderContainer = document.createElement('div');
+            orderContainer.classList.add('relative', 'bg-white', 'shadow-lg', 'rounded-lg', 'p-4', 'mb-4');
+
+            const clientName = document.createElement('p');
+            clientName.classList.add('text-gray-600', 'font-semibold', 'mb-2');
+            clientName.textContent = `Name: ${order.client_name}`;
+            orderContainer.appendChild(clientName);
+
+            const mobileNumber = document.createElement('p');
+            mobileNumber.classList.add('text-gray-600', 'font-semibold', 'mb-2');
+            mobileNumber.textContent = `Mobile Number: ${order.mobile_number}`;
+            orderContainer.appendChild(mobileNumber);
+
+            const address = document.createElement('p');
+            address.classList.add('text-gray-600', 'font-semibold', 'mb-2');
+            address.textContent = `Address: ${order.address}`;
+            orderContainer.appendChild(address);
+
+            const productList = getProductList(order.products, order.products_type);
+            orderContainer.appendChild(productList);
+
+            const status = document.createElement('p');
+            status.classList.add('text-red-600', 'font-semibold', 'mb-2');
+            fetchProducts(`http://127.0.0.1:8086/shipment/api/shipment-status/`)
+                .then(shipments => {
+                    shipments.forEach(shipment => {
+                        if (shipment.shipment === order.id) {
+                            shipmentStatusId = shipment.id;
+                            status.textContent = `Status: ${shipment.status}`;
+                        }
+                    })
+                })
+            orderContainer.appendChild(status);
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'flex absolute right-0 top-0 bottom-0 my-auto mr-5'
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            deleteButton.classList.add('text-2xl', 'text-red-600', 'font-bold', 'focus:outline-none', 'mr-8');
+            deleteButton.addEventListener('click', () => {
+                deleteOrder(order.id, shipmentStatusId);
+            });
+            buttonContainer.appendChild(deleteButton);
+
+            const confirmButton = document.createElement('button');
+            confirmButton.innerHTML = '<i class="fa-solid fa-check"></i>';
+            confirmButton.classList.add('text-2xl', 'text-green-600', 'font-bold', 'focus:outline-none');
+            confirmButton.addEventListener('click', () => {
+                confirmOrder(order.id, shipmentStatusId);
+            });
+            buttonContainer.appendChild(deleteButton);
+            buttonContainer.appendChild(confirmButton);
+            orderContainer.appendChild(buttonContainer);
+
+            orderList.appendChild(orderContainer);
+        } else if (order.user_id === currentUserId) {
             const orderContainer = document.createElement('div');
             orderContainer.classList.add('bg-white', 'shadow-lg', 'rounded-lg', 'p-4', 'mb-4');
 
@@ -114,3 +175,51 @@ function displayOrders(orders) {
     });
 }
 
+function deleteOrder(shipmentUpdateId, shipmentStatusId) {
+    console.log(shipmentUpdateId, shipmentStatusId);
+    fetch(`http://127.0.0.1:8086/shipment/api/shipment-status/${shipmentStatusId}/`, {
+        method: 'DELETE'
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        } else {
+            fetch(`http://127.0.0.1:8086/shipment/api/shipment-updates/${shipmentUpdateId}/`, {
+                method: 'DELETE'
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                } else {
+                    window.location.reload();
+                }
+            })
+                .catch(error => console.error('There was an error deleting cart item:', error));
+        }
+    })
+        .catch(error => console.error('There was an error deleting cart item:', error));
+}
+
+function confirmOrder(shipmentUpdateId, shipmentStatusId) {
+    let status;
+    if (is_staff) {
+        status = 'Transiting';
+    } else if (is_delivery) {
+        status = 'Transited';
+    }
+    fetch(`http://127.0.0.1:8086/shipment/api/shipment-status/${shipmentStatusId}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'shipment': shipmentUpdateId,
+            'status': status
+        })
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        } else {
+            window.location.reload();
+        }
+    })
+        .catch(error => console.error('There was an error deleting cart item:', error));
+}
