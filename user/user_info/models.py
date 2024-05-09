@@ -46,6 +46,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+    is_delivery_office = models.BooleanField(default=False)
 
     objects = UserManager()
 
