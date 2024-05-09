@@ -16,18 +16,27 @@
 <body>
 <nav class="bg-gray-900 p-4 shadow-lg fixed w-full z-20 top-0 start-0">
     <div class="container mx-auto flex justify-between items-center">
-        <span class="text-white text-2xl" id="username">Hello, Username</span>
+        <div class="relative">
+            <span class="text-white text-2xl" id="username">Hello, Username</span>
+            <div id="dropdown-menu"
+                 class="hidden absolute top-full left-0 bg-white shadow-md py-2 w-48 rounded-md">
+                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+        </div>
         <div class="flex items-center">
             <div class="flex items-center ml-4">
-                <input id="home-searchbar" type="text" placeholder="Search..." class="px-4 py-2 bg-gray-800 text-white rounded-l-md focus:outline-none">
+                <input id="home-searchbar" type="text" placeholder="Search..."
+                       class="px-4 py-2 bg-gray-800 text-white rounded-l-md focus:outline-none">
                 <button type="submit" class="px-4 py-2 bg-gray-700 text-white rounded-r-md" onclick="handleSearch()"><i
                         class="fa-solid fa-magnifying-glass"></i></button>
             </div>
             <div class="flex items-center">
                 <input type="file" id="image-input" accept="image/*" style="display:none;">
-                <button class="ml-4 px-4 py-2 bg-gray-700 text-white rounded-md" onclick="handleSearchByImage()"><i class="fa-solid fa-image"></i></button>
+                <button class="ml-4 px-4 py-2 bg-gray-700 text-white rounded-md" onclick="handleSearchByImage()"><i
+                        class="fa-solid fa-image"></i></button>
             </div>
             <a href="home.html" class="text-yellow-500 px-4 py-2 text-2xl"><i class="fa-solid fa-house"></i></a>
+            <a href="shipment.html" class="text-white px-4 py-2 text-2xl"><i class="fa-solid fa-clipboard-check"></i></a>
             <a href="cart.html" class="text-white px-4 py-2 text-2xl"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </div>

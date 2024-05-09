@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
+            currentUserId = data.id;
             displayUsername(data.username);
             fetchProducts('http://127.0.0.1:8084/cart/api/cart-items/')
                 .then(items => displayProducts(items))
@@ -44,110 +45,112 @@ function displayProducts(items) {
     let total = 0;
     let counter = 0;
     items.forEach(item => {
-        const productContainer = document.createElement('div');
-        productContainer.classList.add('bg-white', 'shadow-lg', 'border', 'border-black', 'rounded-lg', 'overflow-hidden', 'm-4', 'flex', 'relative');
+        if (item.user_id === currentUserId) {
+            const productContainer = document.createElement('div');
+            productContainer.classList.add('bg-white', 'shadow-lg', 'border', 'border-black', 'rounded-lg', 'overflow-hidden', 'm-4', 'flex', 'relative');
 
-        const productImage = document.createElement('img');
-        productImage.classList.add('w-72', 'h-80', 'p-3', 'object-contain');
+            const productImage = document.createElement('img');
+            productImage.classList.add('w-72', 'h-80', 'p-3', 'object-contain');
 
-        const contentWrapper = document.createElement('div');
-        contentWrapper.classList.add('flex', 'flex-col', 'p-4');
+            const contentWrapper = document.createElement('div');
+            contentWrapper.classList.add('flex', 'flex-col', 'p-4');
 
-        const productName = document.createElement('div');
-        productName.classList.add('text-gray-800', 'text-2xl', 'font-semibold', 'mb-2');
+            const productName = document.createElement('div');
+            productName.classList.add('text-gray-800', 'text-2xl', 'font-semibold', 'mb-2');
 
-        const productQuantity = document.createElement('div');
-        productQuantity.classList.add('flex', 'mb-2');
+            const productQuantity = document.createElement('div');
+            productQuantity.classList.add('flex', 'mb-2');
 
-        const decreaseButton = document.createElement('button');
-        decreaseButton.textContent = '-';
-        decreaseButton.classList.add('px-2', 'py-1', 'bg-gray-300', 'text-gray-800', 'font-semibold', 'rounded', 'focus:outline-none', 'hover:bg-gray-400', 'transition', 'duration-300', 'ease-in-out');
+            const decreaseButton = document.createElement('button');
+            decreaseButton.textContent = '-';
+            decreaseButton.classList.add('px-2', 'py-1', 'bg-gray-300', 'text-gray-800', 'font-semibold', 'rounded', 'focus:outline-none', 'hover:bg-gray-400', 'transition', 'duration-300', 'ease-in-out');
 
-        const quantityDisplay = document.createElement('span');
-        quantityDisplay.classList.add('px-2', 'py-1', 'text-gray-800', 'font-semibold');
+            const quantityDisplay = document.createElement('span');
+            quantityDisplay.classList.add('px-2', 'py-1', 'text-gray-800', 'font-semibold');
 
-        const increaseButton = document.createElement('button');
-        increaseButton.textContent = '+';
-        increaseButton.classList.add('px-2', 'py-1', 'bg-gray-300', 'text-gray-800', 'font-semibold', 'rounded', 'focus:outline-none', 'hover:bg-gray-400', 'transition', 'duration-300', 'ease-in-out');
+            const increaseButton = document.createElement('button');
+            increaseButton.textContent = '+';
+            increaseButton.classList.add('px-2', 'py-1', 'bg-gray-300', 'text-gray-800', 'font-semibold', 'rounded', 'focus:outline-none', 'hover:bg-gray-400', 'transition', 'duration-300', 'ease-in-out');
 
-        const productPrice = document.createElement('div');
-        productPrice.classList.add('text-red-500', 'font-semibold', 'text-lg', 'absolute', 'top-0', 'right-0', 'p-4');
+            const productPrice = document.createElement('div');
+            productPrice.classList.add('text-red-500', 'font-semibold', 'text-lg', 'absolute', 'top-0', 'right-0', 'p-4');
 
-        const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
-        removeButton.classList.add('absolute', 'bottom-0', 'right-0', 'w-60', 'm-3', 'py-2', 'bg-blue-500', 'text-white', 'uppercase', 'font-semibold', 'tracking-wider', 'hover:bg-blue-600', 'focus:outline-none', 'focus:bg-blue-600', 'transition', 'duration-300', 'ease-in-out', 'rounded-lg');
-        removeButton.addEventListener('click', () => {
-            fetch(`http://127.0.0.1:8084/cart/api/cart-items/${item.id}/`, {
-                method: 'DELETE'
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                window.location.reload();
-            })
-                .catch(error => console.error('There was an error deleting cart item:', error));
-        });
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.classList.add('absolute', 'bottom-0', 'right-0', 'w-60', 'm-3', 'py-2', 'bg-blue-500', 'text-white', 'uppercase', 'font-semibold', 'tracking-wider', 'hover:bg-blue-600', 'focus:outline-none', 'focus:bg-blue-600', 'transition', 'duration-300', 'ease-in-out', 'rounded-lg');
+            removeButton.addEventListener('click', () => {
+                fetch(`http://127.0.0.1:8084/cart/api/cart-items/${item.id}/`, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.reload();
+                })
+                    .catch(error => console.error('There was an error deleting cart item:', error));
+            });
 
-        let type = '';
-        switch (item.product_type) {
-            case 1:
-                type = 'books';
-                break;
-            case 2:
-                type = 'mobiles';
-                break;
-            case 3:
-                type = 'clothes';
-                break;
-        }
-        fetchProducts(`http://127.0.0.1:8082/product/api/${type}/${item.product_id}/`)
-            .then(product => {
-                productImage.src = product.image;
-                productName.textContent = product.name;
-                quantityDisplay.textContent = item.quantity;
-                let price;
-                price = formatPrice(item.quantity * product.price);
-                productPrice.textContent = `Price: ${price} VND`;
-                total += item.quantity * product.price;
-                counter++;
-                if (counter === items.length) {
-                    displayTotal(formatPrice(total));
-                }
-                increaseButton.addEventListener('click', () => {
-                    item.quantity++;
+            let type = '';
+            switch (item.product_type) {
+                case 1:
+                    type = 'books';
+                    break;
+                case 2:
+                    type = 'mobiles';
+                    break;
+                case 3:
+                    type = 'clothes';
+                    break;
+            }
+            fetchProducts(`http://127.0.0.1:8082/product/api/${type}/${item.product_id}/`)
+                .then(product => {
+                    productImage.src = product.image;
+                    productName.textContent = product.name;
                     quantityDisplay.textContent = item.quantity;
+                    let price;
                     price = formatPrice(item.quantity * product.price);
                     productPrice.textContent = `Price: ${price} VND`;
-                    total += product.price;
-                    displayTotal(formatPrice(total));
-                    updateCart(item);
-                });
-                decreaseButton.addEventListener('click', () => {
-                    if (item.quantity > 1) {
-                        item.quantity--;
+                    total += item.quantity * product.price;
+                    counter++;
+                    if (counter === items.length) {
+                        displayTotal(formatPrice(total));
+                    }
+                    increaseButton.addEventListener('click', () => {
+                        item.quantity++;
                         quantityDisplay.textContent = item.quantity;
                         price = formatPrice(item.quantity * product.price);
                         productPrice.textContent = `Price: ${price} VND`;
-                        total -= product.price;
+                        total += product.price;
                         displayTotal(formatPrice(total));
                         updateCart(item);
-                    }
+                    });
+                    decreaseButton.addEventListener('click', () => {
+                        if (item.quantity > 1) {
+                            item.quantity--;
+                            quantityDisplay.textContent = item.quantity;
+                            price = formatPrice(item.quantity * product.price);
+                            productPrice.textContent = `Price: ${price} VND`;
+                            total -= product.price;
+                            displayTotal(formatPrice(total));
+                            updateCart(item);
+                        }
+                    });
                 });
-            });
 
-        productQuantity.appendChild(decreaseButton);
-        productQuantity.appendChild(quantityDisplay);
-        productQuantity.appendChild(increaseButton);
+            productQuantity.appendChild(decreaseButton);
+            productQuantity.appendChild(quantityDisplay);
+            productQuantity.appendChild(increaseButton);
 
-        contentWrapper.appendChild(productName);
-        contentWrapper.appendChild(productQuantity);
+            contentWrapper.appendChild(productName);
+            contentWrapper.appendChild(productQuantity);
 
-        productContainer.appendChild(productImage);
-        productContainer.appendChild(productPrice);
-        productContainer.appendChild(removeButton);
-        productContainer.appendChild(contentWrapper);
+            productContainer.appendChild(productImage);
+            productContainer.appendChild(productPrice);
+            productContainer.appendChild(removeButton);
+            productContainer.appendChild(contentWrapper);
 
-        productList.appendChild(productContainer);
+            productList.appendChild(productContainer);
+        }
     });
 }
 
@@ -179,8 +182,4 @@ function displayTotal(total) {
     totalNumber.textContent = total;
     totalMoney.appendChild(totalLabel);
     totalMoney.appendChild(totalNumber);
-}
-
-function goToCheckout() {
-    window.location.href = "checkout.html";
 }

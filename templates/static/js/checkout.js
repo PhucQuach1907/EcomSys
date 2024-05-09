@@ -1,5 +1,7 @@
 let cart_items = [];
 let total = 0;
+let products = [];
+let product_types = [];
 document.addEventListener('DOMContentLoaded', function () {
     const token = sessionStorage.getItem('token');
     if (!token) {
@@ -82,6 +84,8 @@ function displayProducts(items) {
                 type = 'clothes';
                 break;
         }
+        products.push(item.product_id);
+        product_types.push(item.product_type);
         fetchProducts(`http://127.0.0.1:8082/product/api/${type}/${item.product_id}/`)
             .then(product => {
                 productImage.src = product.image;
@@ -104,7 +108,7 @@ function displayProducts(items) {
     });
 }
 
-function handleCheckout() {
+function handleCheckout(name, mobileNumber, address) {
     const popup = document.createElement('div');
     popup.classList.add('fixed', 'top-0', 'left-0', 'w-full', 'h-full', 'bg-black', 'bg-opacity-50', 'flex', 'justify-center', 'items-center', 'z-50');
 
@@ -133,66 +137,88 @@ function handleCheckout() {
     doneButton.textContent = 'DONE';
     doneButton.classList.add('absolute', 'bottom-0', 'right-0', 'w-60', 'm-3', 'py-2', 'bg-pink-500', 'text-white', 'uppercase', 'font-semibold', 'tracking-wider', 'hover:bg-pink-600', 'focus:outline-none', 'focus:bg-pink-600', 'transition', 'duration-300', 'ease-in-out', 'rounded-lg');
     doneButton.addEventListener('click', () => {
-        fetch('http://127.0.0.1:8085/payment/api/init-payment/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                'user_id': currentUserId,
-                'username': currentUsername,
-                'cart_items': cart_items,
-                'total_price': total,
-                'payment_mode': 'Banking',
-            })
-        })
+        initPayment()
             .then(response => {
-                if (response.ok) {
-                    console.log('Tạo thanh toán thành công');
-                    return response.json();
-                } else {
-                    return response.json().then(data => {
-                        console.log(data.detail);
-                    });
-                }
-                throw new Error('Network response was not ok.');
+                return response.json().then(data =>
+                    updatePaymentStatus(data.id)
+                        .then(response => handleUpdatePaymentStatusResponse(response, data, name, mobileNumber, address))
+                        .catch(error => console.error('There was a problem with your fetch operation:', error))
+                )
             })
-            .then(data => {
-                fetch('http://127.0.0.1:8085/payment/api/payment-status/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        'payment': data.id,
-                        'status': 1
-                    })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            console.log('Thanh toán thành công');
-                            data.cart_items.forEach(item => {
-                                deleteCartItems(item);
-                                window.location.href = 'home.html';
-                            })
-                            return response.json();
-                        } else {
-                            return response.json().then(data => {
-                                console.log(data.detail);
-                            });
-                        }
-                        throw new Error('Network response was not ok.');
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with your fetch operation:', error);
-                    });
-            })
-            .catch(error => {
-                console.error('There was a problem with your fetch operation:', error);
-            });
+            .catch(error => console.error('There was a problem with your fetch operation:', error));
     });
     popupContent.appendChild(closeButton);
     popupContent.appendChild(doneButton);
+
+    popup.appendChild(popupContent);
+    document.body.appendChild(popup);
+}
+
+function takeShipmentInfo() {
+    const popup = document.createElement('div');
+    popup.classList.add('fixed', 'top-0', 'left-0', 'w-full', 'h-full', 'bg-black', 'bg-opacity-50', 'flex', 'justify-center', 'items-center', 'z-50');
+
+    const popupContent = document.createElement('div');
+    popupContent.classList.add('relative', 'flex', 'flex-col', 'bg-white', 'p-8', 'rounded-lg', 'shadow-lg', 'w-3/5', 'h-3/5');
+
+    const message = document.createElement('div');
+    message.classList.add('text-center', 'text-gray-400', 'text-2xl', 'font-semibold', 'mb-2');
+    message.textContent = 'Nhập thông tin giao hàng';
+    popupContent.appendChild(message);
+
+    const nameLabel = document.createElement('label');
+    nameLabel.textContent = 'Name:';
+    nameLabel.className = 'w-80 mb-2 text-gray-800 font-semibold';
+    const nameInput = document.createElement('input');
+    nameInput.setAttribute('type', 'text');
+    nameInput.className = 'w-full px-4 py-2 mt-1 mb-4 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500';
+    nameLabel.appendChild(nameInput);
+    popupContent.appendChild(nameLabel);
+
+    const mobileLabel = document.createElement('label');
+    mobileLabel.textContent = 'Mobile Number:';
+    mobileLabel.className = 'w-80 mb-2 text-gray-800 font-semibold';
+    const mobileInput = document.createElement('input');
+    mobileInput.setAttribute('type', 'text');
+    mobileInput.addEventListener('input', function (event) {
+        const value = event.target.value;
+        event.target.value = value.replace(/\D/g, '');
+    });
+    mobileInput.className = 'w-full px-4 py-2 mt-1 mb-4 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500';
+    mobileLabel.appendChild(mobileInput);
+    popupContent.appendChild(mobileLabel);
+
+    const addressLabel = document.createElement('label');
+    addressLabel.textContent = 'Address:';
+    addressLabel.className = 'w-80 mb-2 text-gray-800 font-semibold';
+    const addressInput = document.createElement('input');
+    addressInput.setAttribute('type', 'text');
+    addressInput.className = 'w-full px-4 py-2 mt-1 mb-4 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500';
+    addressLabel.appendChild(addressInput);
+    popupContent.appendChild(addressLabel);
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'flex justify-center';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'mr-2 w-60 m-3 py-2 bg-gray-400 text-white uppercase font-semibold tracking-wider hover:bg-gray-500 focus:outline-none focus:bg-gray-500 transition duration-300 ease-in-out rounded-lg';
+    cancelButton.onclick = function () {
+        popup.remove();
+    };
+    buttonContainer.appendChild(cancelButton);
+
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Next';
+    submitButton.className = 'mr-2 w-60 m-3 py-2 bg-pink-400 text-white uppercase font-semibold tracking-wider hover:bg-pink-500 focus:outline-none focus:bg-pink-500 transition duration-300 ease-in-out rounded-lg';
+    submitButton.addEventListener('click', function () {
+        const name = nameInput.value;
+        const mobileNumber = mobileInput.value;
+        const address = addressInput.value;
+        handleCheckout(name, mobileNumber, address);
+    });
+    buttonContainer.appendChild(submitButton);
+    popupContent.appendChild(buttonContainer);
 
     popup.appendChild(popupContent);
     document.body.appendChild(popup);
@@ -207,4 +233,96 @@ function deleteCartItems(item) {
         }
     })
         .catch(error => console.error('There was an error deleting cart item:', error));
+}
+
+function initPayment() {
+    return fetch('http://127.0.0.1:8085/payment/api/init-payment/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'user_id': currentUserId,
+            'username': currentUsername,
+            'cart_items': cart_items,
+            'total_price': total,
+            'payment_mode': 'Banking',
+        })
+    });
+}
+
+function updatePaymentStatus(paymentId) {
+    console.log(paymentId)
+    return fetch('http://127.0.0.1:8085/payment/api/payment-status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'payment': paymentId,
+            'status': 1
+        })
+    });
+}
+
+function initShipment(paymentStatusId, name, mobileNumber, address) {
+    fetch('http://127.0.0.1:8086/shipment/api/shipment-updates/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'payment_status_id': paymentStatusId,
+            'user_id': currentUserId,
+            'client_name': name,
+            'mobile_number': mobileNumber,
+            'address': address,
+            'products': products,
+            'products_type': product_types
+        })
+    })
+        .then(response => {
+            if (response.ok) {
+                response.json().then(data => {
+                    updateShipmentStatus(data.id)
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.href = 'shipment.html';
+                            }
+                        })
+                })
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
+        });
+}
+
+function updateShipmentStatus(shipmentId) {
+    return fetch('http://127.0.0.1:8086/shipment/api/shipment-status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'shipment': shipmentId,
+        })
+    });
+}
+
+function handleUpdatePaymentStatusResponse(response, data, name, mobileNumber, address) {
+    if (response.ok) {
+        alert('Thanh toán thành công');
+        data.cart_items.forEach(item => {
+            deleteCartItems(item);
+        });
+        response.json().then(data => {
+            initShipment(data.id, name, mobileNumber, address);
+        })
+    } else {
+        return response.json().then(data => {
+            console.log(data.detail);
+            throw new Error('Failed to update payment status.');
+        });
+    }
 }

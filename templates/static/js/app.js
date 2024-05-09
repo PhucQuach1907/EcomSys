@@ -1,7 +1,34 @@
 let currentUserId, currentUsername, productType;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const username = document.getElementById('username');
+
+    username.addEventListener('mouseenter', () => {
+        dropdownMenu.classList.remove('hidden');
+    });
+
+    username.addEventListener('mouseleave', () => {
+        dropdownMenu.classList.add('hidden');
+    });
+
+    dropdownMenu.addEventListener('mouseenter', () => {
+        dropdownMenu.classList.remove('hidden');
+    });
+
+    dropdownMenu.addEventListener('mouseleave', () => {
+        dropdownMenu.classList.add('hidden');
+    });
+});
+
 function displayUsername(username) {
     const usernameSpan = document.getElementById('username');
     usernameSpan.textContent = "Hello, " + username;
+}
+
+function logout() {
+    sessionStorage.removeItem('token');
+    window.location.href = 'login.html';
 }
 
 async function fetchProducts(url) {
@@ -44,4 +71,8 @@ async function getForeignKeyNames(ids, type) {
     });
 
     return Promise.all(promises);
+}
+
+function goToCheckout() {
+    window.location.href = "checkout.html";
 }
