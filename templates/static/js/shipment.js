@@ -78,7 +78,6 @@ function displayOrders(orders) {
 
     orders.forEach(order => {
         if (is_staff || is_delivery) {
-            let shipmentStatusId;
             const orderContainer = document.createElement('div');
             orderContainer.classList.add('relative', 'bg-white', 'shadow-lg', 'rounded-lg', 'p-4', 'mb-4');
 
@@ -106,34 +105,41 @@ function displayOrders(orders) {
                 .then(shipments => {
                     shipments.forEach(shipment => {
                         if (shipment.shipment === order.id) {
-                            shipmentStatusId = shipment.id;
                             status.textContent = `Status: ${shipment.status}`;
+                            const shipmentStatusId = shipment.id;
+
+                            const buttonContainer = document.createElement('div');
+                            buttonContainer.className = 'flex absolute right-0 top-0 bottom-0 my-auto mr-5';
+
+                            if (is_staff) {
+                                const deleteButton = document.createElement('button');
+                                deleteButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                                deleteButton.classList.add('text-2xl', 'text-red-600', 'font-bold', 'focus:outline-none', 'mr-8');
+                                deleteButton.addEventListener('click', () => {
+                                    deleteOrder(order.id, shipmentStatusId);
+                                });
+                                buttonContainer.appendChild(deleteButton);
+                            }
+
+                            const confirmButton = document.createElement('button');
+                            confirmButton.innerHTML = '<i class="fa-solid fa-check"></i>';
+                            confirmButton.classList.add('text-2xl', 'text-green-600', 'font-bold', 'focus:outline-none');
+                            checkShipmentStatus(shipmentStatusId)
+                                .then(isTransited => {
+                                    if (isTransited) {
+                                        confirmButton.disabled = true;
+                                        confirmButton.classList.add('text-gray-500');
+                                    }
+                                });
+                            confirmButton.addEventListener('click', () => {
+                                confirmOrder(order.id, shipmentStatusId);
+                            });
+                            buttonContainer.appendChild(confirmButton);
+                            orderContainer.appendChild(buttonContainer);
                         }
-                    })
-                })
+                    });
+                });
             orderContainer.appendChild(status);
-
-            const buttonContainer = document.createElement('div');
-            buttonContainer.className = 'flex absolute right-0 top-0 bottom-0 my-auto mr-5'
-
-            const deleteButton = document.createElement('button');
-            deleteButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-            deleteButton.classList.add('text-2xl', 'text-red-600', 'font-bold', 'focus:outline-none', 'mr-8');
-            deleteButton.addEventListener('click', () => {
-                deleteOrder(order.id, shipmentStatusId);
-            });
-            buttonContainer.appendChild(deleteButton);
-
-            const confirmButton = document.createElement('button');
-            confirmButton.innerHTML = '<i class="fa-solid fa-check"></i>';
-            confirmButton.classList.add('text-2xl', 'text-green-600', 'font-bold', 'focus:outline-none');
-            confirmButton.addEventListener('click', () => {
-                confirmOrder(order.id, shipmentStatusId);
-            });
-            buttonContainer.appendChild(deleteButton);
-            buttonContainer.appendChild(confirmButton);
-            orderContainer.appendChild(buttonContainer);
-
             orderList.appendChild(orderContainer);
         } else if (order.user_id === currentUserId) {
             const orderContainer = document.createElement('div');
@@ -167,9 +173,8 @@ function displayOrders(orders) {
                             status.textContent = `Status: ${shipment.status}`;
                         }
                     })
-                })
+                });
             orderContainer.appendChild(status);
-
             orderList.appendChild(orderContainer);
         }
     });
@@ -222,4 +227,15 @@ function confirmOrder(shipmentUpdateId, shipmentStatusId) {
         }
     })
         .catch(error => console.error('There was an error deleting cart item:', error));
+}
+
+async function checkShipmentStatus(shipmentStatusId) {
+    try {
+        const response = await fetch(`http://127.0.0.1:8086/shipment/api/shipment-status/${shipmentStatusId}/`);
+        const data = await response.json();
+        return data.status === "Transited";
+    } catch (error) {
+        console.error("Error while fetching shipment status:", error);
+        return false;
+    }
 }
