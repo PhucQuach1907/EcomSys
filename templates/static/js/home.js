@@ -323,3 +323,73 @@ function handleSearchByImage() {
     input.click();
 }
 
+function handleSearchByVoice() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showPopup('Browser does not support audio recording.');
+        return;
+    }
+
+    navigator.mediaDevices.getUserMedia({audio: true})
+        .then(stream => {
+            const mediaRecorder = new MediaRecorder(stream);
+            let audioChunks = [];
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks);
+                for (let i = 1; i <= 3; i++) {
+                const formData = new FormData();
+                formData.append('voice', audioBlob);
+                formData.append('type', i)
+
+                fetch('http://127.0.0.1:8083/search-by-voice/', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        showPopup('Error sending request: ' + error);
+                    });
+                }
+            };
+
+            mediaRecorder.start();
+
+            setTimeout(() => {
+                mediaRecorder.stop();
+                showPopup('Processing...');
+            }, 5000);
+        })
+        .catch(error => {
+            showPopup('Error: ' + error);
+        });
+}
+
+function sendRequest(audioBlob) {
+
+}
+
+function showPopup(message) {
+    const overlay = document.getElementById('overlay');
+    const popup = document.getElementById('popup');
+    const popupText = document.getElementById('popup-text');
+
+    popupText.textContent = message;
+    overlay.classList.remove('hidden');
+    popup.classList.remove('hidden');
+}
+
+function closePopup() {
+    const overlay = document.getElementById('overlay');
+    const popup = document.getElementById('popup');
+
+    overlay.classList.add('hidden');
+    popup.classList.add('hidden');
+}
+

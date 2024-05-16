@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.urls import path
 from search_by_word.views import *
 from search_by_image.views import *
+from search_by_voice.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('search/', SearchAPI.as_view(), name='search'),
-    path('search-by-image/', SearchProductByImageAPIView.as_view(), name='search-by-image')
+    path('search-by-image/', SearchProductByImageAPIView.as_view(), name='search-by-image'),
+    path('search-by-voice/', SearchProductByVoiceAPIView.as_view(), name='search-by-voice')
 ]
