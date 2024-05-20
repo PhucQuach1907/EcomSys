@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({email, password})
             });
 
             const data = await response.json();
@@ -36,6 +36,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const username = document.getElementById('signup-username').value;
         const first_name = document.getElementById('signup-firstname').value;
         const last_name = document.getElementById('signup-lastname').value;
+        const noHouse = document.getElementById('signup-noHouse').value;
+        const street = document.getElementById('signup-street').value;
+        const district = document.getElementById('signup-district').value;
+        const city = document.getElementById('signup-city').value;
+        const country = document.getElementById('signup-country').value;
 
         try {
             const response = await fetch('http://127.0.0.1:8081/user/register/api/', {
@@ -43,7 +48,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, username, password, first_name, last_name })
+                body: JSON.stringify({
+                    email: email,
+                    account: {
+                        username: username,
+                        password: password
+                    },
+                    fullname: {
+                        first_name: first_name,
+                        last_name: last_name
+                    },
+                    address: {
+                        noHouse: noHouse,
+                        street: street,
+                        district: district,
+                        city: city,
+                        country: country
+                    }
+                })
             });
 
             if (!response.ok) {

@@ -40,8 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             currentUserId = data.id;
-            currentUsername = data.username;
-            displayUsername(data.username);
+            displayUsername(data.account.username);
             fetchProducts('http://127.0.0.1:8084/cart/api/cart-items/')
                 .then(items => displayProducts(items))
                 .catch(error => console.error('Error fetching clothes:', error));

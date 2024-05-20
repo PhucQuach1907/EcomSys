@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             currentUserId = data.id;
-            displayUsername(data.username);
+            displayUsername(data.account.username);
             fetchProducts('http://127.0.0.1:8082/product/api/books/')
                 .then(products => displayProducts(products, 'books'))
                 .catch(error => console.error('Error fetching books:', error));

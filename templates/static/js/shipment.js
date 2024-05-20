@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             currentUserId = data.id;
             currentUsername = data.username;
-            displayUsername(data.username);
+            displayUsername(data.account.username);
             is_staff = data.is_staff;
             is_delivery = data.is_delivery_office;
             fetchProducts('http://127.0.0.1:8086/shipment/api/shipment-updates/')

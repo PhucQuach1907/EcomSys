@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'user.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecomsys-user',
+        'NAME': 'ecomsys-user2',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -130,3 +130,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user_info.User'
+
+AUTHENTICATION_BACKENDS = [
+    'login.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             currentUserId = data.id;
             productType = type;
-            displayUsername(data.username);
+            displayUsername(data.account.username);
             displayProductType(type);
             let productUrl = 'http://127.0.0.1:8082/product/api/' + type + '/';
             fetchProducts(productUrl)

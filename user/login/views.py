@@ -2,12 +2,11 @@ from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import json, jwt, datetime
-
+import jwt
+import datetime
 from rest_framework.views import APIView
 
 from user_info.models import User
-
 from user_info.serializers import UserSerializer
 
 
@@ -51,7 +50,6 @@ class DecodeToken(APIView):
         except jwt.ExpiredSignatureError:
             return Response({'error': 'Token hết hạn, vui lòng đăng nhập lại.'}, status=status.HTTP_401_UNAUTHORIZED)
         except jwt.InvalidTokenError:
-            return Response({'error': 'Token không hợp lệ, vui lòng đăng nhập lại.'},
-                            status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Token không hợp lệ, vui lòng đăng nhập lại.'}, status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:
             return Response({'error': 'Người dùng không tồn tại.'}, status=status.HTTP_404_NOT_FOUND)
