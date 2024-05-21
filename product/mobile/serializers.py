@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Mobile, Type
+from .models import Mobile, Producer, Type
 
 
 class MobileSerializer(serializers.ModelSerializer):
@@ -12,4 +12,10 @@ class MobileSerializer(serializers.ModelSerializer):
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
+        fields = '__all__'
+
+
+class ProducerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producer
         fields = '__all__'

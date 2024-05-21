@@ -47,3 +47,8 @@ class MobileViewSet(viewsets.ModelViewSet):
 class MobileTypeViewSet(viewsets.ModelViewSet):
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
+
+
+class MobileProducerViewSet(viewsets.ModelViewSet):
+    queryset = Producer.objects.all()
+    serializer_class = ProducerSerializer

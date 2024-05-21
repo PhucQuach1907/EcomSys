@@ -30,6 +30,7 @@ router.register(r'books', BookViewSet)
 router.register(r'clothes-producers', ClothesProducerViewSet)
 router.register(r'clothes-styles', ClothesStyleViewSet)
 router.register(r'clothes', ClothesViewSet)
+router.register(r'mobiles-producers', MobileProducerViewSet)
 router.register(r'mobiles-types', MobileTypeViewSet)
 router.register(r'mobiles', MobileViewSet)
 
