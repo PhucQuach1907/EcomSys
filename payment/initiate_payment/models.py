@@ -6,7 +6,7 @@ from django.db import models
 class Payment(models.Model):
     user_id = models.PositiveBigIntegerField(blank=True, null=True)
     username = models.CharField(max_length=255, blank=True, null=True)
-    cart_items = ArrayField(models.PositiveBigIntegerField())
+    order_id = models.PositiveBigIntegerField(blank=True, null=True)
     total_price = models.BigIntegerField()
     payment_mode = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
