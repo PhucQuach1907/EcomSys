@@ -69,9 +69,16 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (!response.ok) {
-                alert('Registration failed');
+                const errorData = await response.json();
+                if (errorData.account.password) {
+                    alert(errorData.account.password);
+                }
+                else {
+                    alert("Register failed!")
+                }
+            } else {
+                window.location.reload();
             }
-            window.location.reload();
         } catch (error) {
             console.error('Error registering:', error);
         }

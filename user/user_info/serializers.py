@@ -1,4 +1,6 @@
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ValidationError
+import re
 from rest_framework import serializers
 from .models import User, Account, Fullname, Address
 
@@ -9,16 +11,32 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ['username', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
+        if not re.search(r'[A-Z]', value):
+            raise ValidationError("Password must contain at least one uppercase letter.")
+        if not re.search(r'[a-z]', value):
+            raise ValidationError("Password must contain at least one lowercase letter.")
+        if not re.search(r'[\d]', value):
+            raise ValidationError("Password must contain at least one digit.")
+        if not re.search(r'[!@#$%^&*()_+\-=\[\]{};:\'",.<>/?\\|`~]', value):
+            raise ValidationError("Password must contain at least one special character.")
+        return value
+
     def create(self, validated_data):
+        password = validated_data.pop('password')
+        validated_data['password'] = self.validate_password(password)
         account = Account(**validated_data)
-        account.set_password(validated_data['password'])
+        account.set_password(password)
         account.save()
         return account
 
     def update(self, instance, validated_data):
         if 'password' in validated_data:
-            instance.set_password(validated_data['password'])
-            validated_data.pop('password')
+            password = validated_data.pop('password')
+            validated_data['password'] = self.validate_password(password)
+            instance.set_password(password)
         return super().update(instance, validated_data)
 
 
