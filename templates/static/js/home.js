@@ -70,6 +70,11 @@ function displayProducts(products, sectionId) {
         }
         const productContainer = document.createElement('div');
         productContainer.classList.add('w-60', 'bg-white', 'shadow-lg', 'border', 'border-black', 'rounded-lg', 'overflow-hidden', 'm-4', 'flex', 'flex-col');
+        productContainer.addEventListener('click', () => {
+            sessionStorage.setItem('product_id', product.id);
+            sessionStorage.setItem('type', sectionId);
+            window.location.href = `product_info.html`;
+        });
 
         const contentWrapper = document.createElement('div');
         contentWrapper.classList.add('flex', 'flex-col', 'h-full', 'justify-between');
@@ -94,6 +99,7 @@ function displayProducts(products, sectionId) {
         addToCartButton.textContent = 'Add to Cart';
         addToCartButton.classList.add('w-full', 'py-2', 'bg-blue-500', 'text-white', 'uppercase', 'font-semibold', 'tracking-wider', 'hover:bg-blue-600', 'focus:outline-none', 'focus:bg-blue-600', 'transition', 'duration-300', 'ease-in-out', 'rounded-b-lg');
         addToCartButton.addEventListener('click', () => {
+            event.stopPropagation();
             openPopup(product, sectionId);
         });
         productContainer.appendChild(contentWrapper);
